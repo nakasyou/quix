@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' show Client;
 
 class StdoutColors {
   static final dynamic Function(dynamic) _selectColor =
@@ -15,7 +16,19 @@ class StdoutColors {
   static final dynamic white = _selectColor('37');
 }
 
+dynamic getProjectData({required String? id}) async {
+  final Client client = new Client();
+
+  dynamic response =
+      await client.get(Uri.https('projects.scratch.mit.edu', '/${id}'));
+  client.close();
+
+  return jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+}
+
 void main(List<String> args) async {
   final projectUrl = stdin.readLineSync() as String;
   final String? projectId = new RegExp(r'\d+').firstMatch(projectUrl)?.group(0);
+
+  print(getProjectData(id: projectId));
 }
