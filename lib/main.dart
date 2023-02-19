@@ -50,3 +50,5 @@ void main(List<String> args) async {
     print('[${StdoutColors.red('Exception')}]: 無効なプロジェクト URL');
   }
 }
+
+const opecode = {};
