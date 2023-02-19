@@ -16,30 +16,36 @@ class StdoutColors {
   static final dynamic white = _selectColor('37');
 }
 
-dynamic getProjectData({required String? id}) async {
+dynamic getProjectData({required String id}) async {
   final Client client = new Client();
 
-  Map<dynamic, dynamic> decode({required List<int> body}) {
-    return jsonDecode(utf8.decode(body)) as Map;
+  Map<String, dynamic> decode({required List<int> body}) {
+    return jsonDecode(utf8.decode(body)) as Map<String, dynamic>;
   }
 
-  Future<dynamic> getToken() async {
-    final response =
+  try {
+    final tokenResponse =
         await client.get(Uri.https('api.scratch.mit.edu', '/projects/${id}'));
+    final projectToken = decode(body: tokenResponse.bodyBytes)['project_token'];
+    final projectResponse = await client.get(Uri.https(
+        'projects.scratch.mit.edu', '/${id}', {'token': projectToken}));
 
-    return decode(body: response.bodyBytes)['project_token'];
+    return decode(body: projectResponse.bodyBytes);
+  } finally {
+    client.close();
   }
-
-  final response = await client.get(Uri.https(
-      'projects.scratch.mit.edu', '/${id}', {'token': await getToken()}));
-  client.close();
-
-  return decode(body: response.bodyBytes);
 }
 
 void main(List<String> args) async {
-  final projectUrl = stdin.readLineSync() as String;
-  final String? projectId = new RegExp(r'\d+').firstMatch(projectUrl)?.group(0);
+  final projectUrl = stdin.readLineSync()?.trim();
+  final String? projectId = projectUrl != null &&
+          projectUrl.startsWith('https://scratch.mit.edu/projects/')
+      ? new RegExp(r'\d+').firstMatch(projectUrl)?.group(0)
+      : null;
 
-  print(await getProjectData(id: projectId));
+  if (projectId != null) {
+    print(await getProjectData(id: projectId));
+  } else {
+    print('[${StdoutColors.red('Exception')}]: 無効なプロジェクト URL');
+  }
 }
