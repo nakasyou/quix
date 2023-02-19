@@ -19,18 +19,19 @@ class StdoutColors {
 dynamic getProjectData({required String id}) async {
   final Client client = new Client();
 
-  Map<String, dynamic> decode({required List<int> body}) {
+  Map<String, dynamic> _decode({required List<int> body}) {
     return jsonDecode(utf8.decode(body)) as Map<String, dynamic>;
   }
 
   try {
     final tokenResponse =
         await client.get(Uri.https('api.scratch.mit.edu', '/projects/${id}'));
-    final projectToken = decode(body: tokenResponse.bodyBytes)['project_token'];
+    final projectToken =
+        _decode(body: tokenResponse.bodyBytes)['project_token'];
     final projectResponse = await client.get(Uri.https(
         'projects.scratch.mit.edu', '/${id}', {'token': projectToken}));
 
-    return decode(body: projectResponse.bodyBytes);
+    return _decode(body: projectResponse.bodyBytes);
   } finally {
     client.close();
   }
