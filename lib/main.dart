@@ -51,4 +51,4 @@ void main(List<String> args) async {
   }
 }
 
-const opecode = {};
+const opcode = {};
