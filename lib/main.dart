@@ -51,4 +51,28 @@ void main(List<String> args) async {
   }
 }
 
-const opcode = {};
+const opcode = {
+  "motion":[
+    "motion_movesteps",
+    "motion_turnright",
+    "motion_turnleft",
+    "motion_goto",
+    "motion_goto_menu",
+    "motion_gotoxy",
+    "motion_glideto",
+    "motion_glideto_menu",
+    "motion_glidesecstoxy",
+    "motion_pointindirection",
+    "motion_pointtowards",
+    "motion_pointtowards_menu",
+    "motion_changexby",
+    "motion_setx",
+    "motion_changeyby",
+    "motion_sety",
+    "motion_ifonedgebounce",
+    "motion_setrotationstyle",
+    "motion_xposition",
+    "motion_yposition",
+    "motion_direction"
+  ]
+};
